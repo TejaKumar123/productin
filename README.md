@@ -16,3 +16,5 @@ It is a product booking website.
 </ul>
 <h1>Description:</h1>
 <p>It is a product booking website where user can book products. It has signin and signup functionality using flask-login. Email verification is done using flask-mail while creating an account. </p>
+<h1>Home page:</h1>
+<img src="readme/a.png" >
