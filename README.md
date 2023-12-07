@@ -14,3 +14,5 @@ It is a product booking website.
   <li>SQlite database</li>
   <li>flask-mail to send OTP for email verification</li>
 </ul>
+<h1>Description:</h1>
+<p>It is a product booking website where user can book products. It has signin and signup functionality using flask-login. Email verification is done using flask-mail while creating an account. </p>
