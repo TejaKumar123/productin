@@ -1,0 +1,77 @@
+{% extends "temp.html" %}
+{% block title %}
+Login
+{% endblock  %}
+
+{%block content%}
+
+<style>
+    #signindiv{background-color:rgba(255,255,255,0.1);padding:20px;border-radius:10px;backdrop-filter:blur(5px) brightness(120%);font-size:110%;box-shadow:0px 0px 6px black;}
+    #signindiv input{background:transparent;color:black;border:none;border-bottom:2px solid black;outline:none;border-radius:0px;box-shadow:0px 0px 0px black;}
+    #signindiv input:focus{box-shadow:0px 0px 0px black;}
+    #signindiv input[type="submit"]{border:none;}
+    #signindiv label{color:black;}
+
+</style>
+
+
+ <br></br>
+ <div class="container">
+     <div class="row">
+             {%with message=get_flashed_messages(with_categories=true)%}
+                {%if message%}
+                    {%for category,mes in message%}
+                    <div class="col-md-12">
+                        <div class="alert alert-danger alert-dismissable">
+                            <span class="close" data-dismiss="alert" >&times;</span>
+                            <b>{{mes}}</b>
+                        </div>
+                    </div>
+                    {%endfor%}
+                {%endif%}
+            {%endwith%}
+    </div>
+ </div>
+
+<h1 class="text-center" style="color:black;">SignIn to ProductIn</h1><br>
+<div class="container" >
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4" id="signindiv">
+            <form action="{{request.path}}" method="post">
+                <div class="form-group">
+                    <label for="uname">Username/Email:</label>
+                    <input type="text" name="username" id="uname" class="form-control" onfocusout="backg(event)" style="background:transparent;" required>
+                </div>
+                <div class="form-group">
+                    <input type="radio" name="userormail" value="email" id="usermail1" checked style="transform:translateY(2px) scale(1.1,1.1)">
+                    <label for="usermail1" style="user-select:none;">Email</label><br>
+                    <input type="radio" name="userormail" value="username" id="usermail" style="transform:translateY(2px) scale(1.1,1.1)">
+                    <label for="usermail" style="user-select:none;">Username</label>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" id="password" class="form-control" required>
+                </div>
+                <!----
+                <div class="form-group">
+                    <input type="radio" name="admin" value="user" id="admin" checked style="transform:translateY(2px) scale(1.1,1.1)">
+                    <label for="admin" style="user-select:none;">user:</label><br>
+                    <input type="radio" name="admin" value="admin" id="admin1" style="transform:translateY(2px) scale(1.1,1.1)">
+                    <label for="admin1" style="user-select:none;">admin:</label>
+                </div>---->
+                <div class="form-group">
+                    <input type="submit" name="submit" value="SignIn" class="form-control" style="background-color:green;color:white;"  required>
+                </div>
+                <p class="text-center" style="color:black;">If not register <a href="{{url_for('signup')}}" style="color:blue;"><b>create account</b></a></p>
+            </form>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+
+<script>
+
+</script>
+
+{%endblock%}

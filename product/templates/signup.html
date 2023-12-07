@@ -1,0 +1,113 @@
+{% extends "temp.html" %}
+{% block title %}
+Signup
+{% endblock  %}
+
+{%block content%}
+
+<style>
+    #signupdiv{background-color:rgba(255,255,255,0.1);padding:20px;border-radius:10px;backdrop-filter:blur(5px) brightness(120%);font-size:110%;box-shadow:0px 0px 6px black;}
+    #signupdiv input{background:transparent;color:black;border:none;border-bottom:2px solid black;outline:none;border-radius:0px;box-shadow:0px 0px 0px black;}
+    #signupdiv input:focus{box-shadow:0px 0px 0px black;}
+    #signupdiv input[type="submit"]{border:none;}
+    #signupdiv label{color:black;}
+    #submit_button{width:;background-color:;opacity:;filter:;}
+    #submit_heade{width:30px;height:30px;border-radius:100%;background-color:transparent;border-top:3px solid blue;border-bottom:3px solid blue;border-right:3px solid #ffffff60;border-left:3px solid #ffffff60;animation:turn 1s linear 0s infinite normal;overflow:hidden;margin:auto;margin-bottom:10px;}
+    @keyframes turn{
+        from{transform:rotateZ(0deg);}
+        to{transform:rotateZ(360deg);}
+    }
+    #cancelbutton{border:none;outline:none;background-color:transparent;box-shadow:0px 0px 4px black;color:black;}
+    #cancelbutton:hover{transform:scale(0.9,0.9);}
+</style>
+
+
+ <br></br>
+ <div class="container">
+     <div class="row">
+             {%with message=get_flashed_messages(with_categories=true)%}
+                {%if message%}
+                    {%for category,mes in message%}
+                    <div class="col-md-12">
+                        <div class="alert alert-{{category}} alert-dismissable">
+                            <span class="close" data-dismiss="alert" >&times;</span>
+                            <b>{{mes}}</b>
+                        </div>
+                    </div>
+                    {%endfor%}
+                {%endif%}
+            {%endwith%}
+    </div>
+</div>
+
+<button class="btn hidden" data-toggle="modal" data-target="#alertmodal" id="modal_button"></button>
+<div class="modal fade" id="alertmodal">
+    <div class="modal-dialog">
+        <div class="modal-container" style="display:flex;align-items:center;justify-content:center;;">
+            <div style="background-color:#36adcf;width:200px;height:100px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;">
+                <center><p style="color:black;opacity:80%;">Verification code is sending to email.Please wait.....</p></center>
+                <span class="close hidden" data-dismiss="modal">&times;</span>
+                <button class="btn" onclick="previousElementSibling.click()" id="cancelbutton">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h1 class="text-center" style="color:black;">SignUp for ProductIn</h1><br>
+<div class="container" >
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4" id="signupdiv">
+            <form action="{{request.path}}" method="post">
+                <div class="form-group">
+                    <label for="uname">Username:</label>
+                    <input type="text" name="username" id="uname" class="form-control" placeholder="username123" onfocusin="alert_focused()" onfocusout="alert_blured()" required>
+                </div>
+                <div class="form-group">
+                    <label for="mail">Email:</label>
+                    <input type="email" name="email" id="mail" class="form-control" placeholder="productin@gmail.com" onfocusin="alert_focused()" onfocusout="alert_blured()" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" id="password" class="form-control" onfocusin="alert_focused()" onfocusout="alert_blured()" required>
+                </div>
+                <div class="form-group">
+                    <label for="password1">Repeat password:</label>
+                    <input type="password" name="password1" id="password1" class="form-control" onfocusin="alert_focused()" onfocusout="alert_blured()" required>
+                </div>
+                <div class="form-group" id="submit_header">
+                    <input type="submit" name="submit" value="SignUp" class="form-control" style="background-color:green;color:white;" onclick="loading_email(event)" id="submit_button" required>
+                </div>
+                <p class="text-center" style="color:black;">Already have account <a href="{{url_for('signin')}}" style="color:blue;"><b>Login</b></a></p>
+            </form>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+
+<script>
+    var a=0
+    function alert_focused(){
+        a+=1;
+        console.log(a)
+    }
+
+    function alert_blured(){
+        a-=1;
+        console.log(a)
+    }
+    function loading_email(event){
+        setTimeout(loading_email1,100);
+    }
+    function loading_email1(){
+        if(!a){
+            document.getElementById("modal_button").click();
+        }
+        else{
+            document.getElementById("submit_button").value="SignUp";
+        }
+    }
+
+</script>
+
+{%endblock%}

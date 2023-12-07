@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>
+        {% block title%}
+
+        {% endblock %}
+    </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        body::-webkit-scrollbar{width:0px;}
+        #productnav{background-color:rgba(0,0,0,0.8);backdrop-filter:blur(10px);border:none;color:black;}
+        #navheader{color:white;transform:scale(1.2,1.2);}
+        body{background:url("static/a.jpg");background-repeat:no-repeat;background-attachment:fixed;background-size:cover;}
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top navbar-responsive" id="productnav">
+         <div class="container">
+           <div class="navbar-header">
+             <a class="navbar-brand" id="navheader" >ProductIn</a>
+           </div>
+           <ul class="nav navbar-nav">
+              <li><a href="{{url_for('home')}}">Home</a></li>
+            {% if current_user.is_authenticated and current_user.isadmin %}
+             <li><a href="{{url_for('adminpage')}}">Dashboard</a></li>
+            {% elif current_user.is_authenticated and not current_user.isadmin %}
+             <li><a href="{{url_for('userpage')}}">Bookings</a></li>
+            {% endif %}
+           </ul>
+           <ul class="nav navbar-nav navbar-right">
+            {% if  not current_user.is_authenticated %}
+             <li><a href="{{url_for('signup')}}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+             <li><a href="{{url_for('signin')}}"><span class="glyphicon glyphicon-log-in"></span> SignIn</a></li>
+           </ul>
+            {% elif current_user.is_authenticated %}
+           <ul class="nav navbar-nav navbar-right">
+             <li><a href="{{url_for('logout')}}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+           </ul>
+           {% endif %}
+         </div>
+     </nav>
+     <br><br>
+
+
+     {% block content %}
+
+     {% endblock %}
+
+    <!--- <div class="btn-group">
+     <button type="button" class="btn btn-success dropdown-toggle"  data-toggle="dropdown">drop down</button>
+     <ul class="dropdown-menu" role="menu">
+         <li class="text-center"><a>link2</a></li>
+         <li><a>link1</a></li>
+    </ul>
+</div>---->
+
+    <!---<div class="container">
+        <div class="row text-center">
+            <div class="col-md-4"></div>
+            <div class="col-md-4  alert alert-warning alert-dismissable">
+                <span class="close" data-dismiss="alert">&times;</span>
+                <p class="lg">click to close</p>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+    </div>--->
+
+</body>
+</html>

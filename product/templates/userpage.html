@@ -1,0 +1,108 @@
+{%extends "temp.html"%}
+{%block title%}
+userpage
+{%endblock%}
+
+{%block content%}
+
+<style>
+    table{background-color:rgba(34,34,34,0.4);color:white;backdrop-filter:blur(10px);}
+    #tablerow1{color:white;background-color:black;font-size:120%;padding:5px;}
+    #helloanim{list-style-type:none;font-size:36px;align:center;}
+    #helloanim{animation:hello 0.35s linear 0s 1 normal;transform-origin:50% -20%;}
+    @keyframes hello {
+        from{transform:scale(0,0);}
+        to{transform:scale(1,1);}
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            {%with m=get_flashed_messages(with_categories=true)%}
+                {%if m%}
+                    {%for category,mesg in m%}
+                        <div class="alert alert-{{category}} alert-dismissable">
+                            <span class="close" data-dismiss="alert">&times;</span>
+                            <b>{{mesg}}</b>
+                        </div>
+                    {%endfor%}
+                {%endif%}
+            {%endwith%}
+        </div>
+    </div>
+</div>
+
+<button class="btn hidden" data-toggle="modal" data-target="#mymodal" id="modal_button"></button>
+<div class="modal fade" id="mymodal">
+    <div class="modal-dialog" style="border:2px solid #337ab7;border-radius:10px;overflow:hidden;">
+            <div class="modal-header bg-primary" style="padding:10px 10px 10px 10px;">
+                <span class="close" data-dismiss="modal" style="font-size:170%;" >&times</span>
+                <li style="list-style-type:none;color:white;font-weight:700;font-size:110%;" id="alerting_modal">Name:phone</li>
+            </div>
+            <div class="modal-body" style="background-color:white;color:black;font-size:110%;padding:10px 10px 1px 10px;">
+                <p id="alert_info">hi</p>
+            </div>
+    </div>
+</div>
+<br>
+
+<center><div id="helloanim"><li style="color:black;"><span style="font-size:90%;">&#128075;</span> {{current_user.username}}</li></div></center>
+
+{%if bookings%}
+<h3 class="text-center" style="color:black;margin-top:0px;margin-left:10px;">Lets check you bookings</h3>
+{%endif%}
+<br>
+<div class="container">
+    {%if not bookings%}
+        <h3 class="text-center" style="color:black;">No product is booked yet.</h3><br>
+    {%else%}
+    <table class="table table-responsive">
+        <tr class="text-center" id="tablerow1">
+            <td><b>Name</b></td>
+            <td><b>Price</b></td>
+            <td><b>Description</b></td>
+            <td></td>
+        </tr>
+        {%for b in bookings%}
+            {%for p in products%}
+                {%if b.pid==p.id%}
+                    <tr class="text-center">
+                        <td class="hidden">{{b.pid}}</td>
+                        <td>{{p.name}}</td>
+                        <td>{{p.price}}</td>
+                        <td class="hidden">{{p.description}}</td>
+                        <td><button class="btn btn-primary" onclick="alert_info(event)">Details</button></td>
+                        <td><button class="btn btn-success" onclick="sell_item(event)">Sell</button></td>
+                    </tr>
+                {%endif%}
+            {%endfor%}
+        {%endfor%}
+    </table>
+    {%endif%}
+</div>
+
+<form action="{{request.path}}" method="post" class="hidden" id="sell_item" >
+    <input type="number" value="" name="pid">
+    <input type="submit" value="sell_item" name="submit">
+</form>
+
+<script>
+
+function sell_item(event){
+    let parent=event.target.parentElement.parentElement;
+    let id=parseInt(parent.children[0].innerHTML);
+    let sellform=document.getElementById("sell_item");
+    sellform.children[0].value=id;
+    sellform.children[1].click();
+}
+
+function alert_info(event){
+    let parent=event.target.parentElement.parentElement;
+    document.getElementById("alerting_modal").innerHTML="Name: "+parent.children[1].innerHTML+"<br>Price: "+parent.children[2].innerHTML;
+    document.getElementById("alert_info").innerHTML=parent.children[3].innerHTML;
+    document.getElementById("modal_button").click();
+}
+
+</script>
+{%endblock%}

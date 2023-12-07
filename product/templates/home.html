@@ -1,0 +1,137 @@
+{% extends "temp.html" %}
+{% block title %}
+home
+{% endblock %}
+
+{% block content%}
+
+<style>
+    /*#tablerow1{background-color:black;color:white;}
+    #tablerow1 td{font-size:120%;}
+    #tablerows{background-color:rgba(34,34,34,0.4);color:white;backdrop-filter:blur(8px);}*/
+    #outeritemdiv{display:flex;flex-direction:row;align-items:flex-start;justify-content:flex-start;flex-wrap:wrap;;}
+    #itemdivs{background-color:rgba(34,34,34,0.7);color:white;backdrop-filter:blur(8px);border-radius:10px;margin:13px 13px 13px 13px;padding:5px 5px 15px 5px;box-shadow:;transition:0.2s;position:;relative;overflow:hidden;height:150px;}
+    #itemdivs:after{content:"";position:absolute;background-color:rgba(255,255,255,0.8);width:0%;height:0%;z-index:-1;backdrop-drop:blur(8px);transition:0.3s;border-radius:10px;transition:0.3s ease-out;left:0%;bottom:0%;}
+    #itemdivs:hover{transform:translateY(-20px);color:black;background-color:transparent;box-shadow:0px 0px 6px black;}
+    #itemdivs:hover::after{width:100%;height:100%;transition:0.2s ease-out;}
+</style>
+<br>
+<!---<h1 class="text-center" style="color:black;">Home Page</h1>--->
+<div class="container">
+{% with m = get_flashed_messages(with_categories=true) %}
+    {% for category,me in m %}
+    <div class="alert alert-{{ category }} alert-dismissable">
+        <span class="close" data-dismiss="alert" >&times;</span>
+        {{me}}
+    </div>
+    {% endfor %}
+{% endwith %}
+</div>
+
+<button class="btn hidden" data-toggle="modal" data-target="#mymodl" id="modl_button"></button>
+<div class="modal fade" id="mymodl">
+    <div class="modal-dialog" style="border:2px solid #337ab7;border-radius:10px;overflow:hidden;">
+        <div class="modal-header bg-primary" style="padding:10px 10px 10px 10px;border-bottom:1px solid black;">
+                <span class="close" data-dismiss="modal" style="font-size:190%;" >&times;</span>
+                <b><li style="list-style-type:none;color:white;font-size:110%;" id="alerting_modl" ></li></b>
+        </div>
+        <div class="modal-body" style="padding:10px 10px 1px 10px;background-color:white;font-size:110%;color:black;">
+            <p id="alerting_info"></p>
+        </div>
+    </div>
+</div>
+
+<br>
+<!------items table--->
+<!-----
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-responsive">
+                <tr id="tablerow1" class="text-center">
+                    <td><b>Name</b></td>
+                    <td><b>Price</b></td>
+                    <td><b>Description</b></td>
+                    {%if current_user.is_authenticated %}
+                        {%if not current_user.isadmin%}
+                                <td></td>
+                        {%endif%}
+                    {%else%}
+                        <td></td>
+                    {%endif%}
+                </tr>
+                {%for p in products%}
+                    <tr class="text-center " id="tablerows" >
+                        <td class="hidden">{{p.id}}</td>
+                        <td>{{p.name}}</td>
+                        <td>{{p.price}}</td>
+                        <td class="hidden">{{p.description}}</td>
+                        <td><button class="btn btn-primary" onclick="alert_info(event)">Details</button></td>
+                        {%if current_user.is_authenticated %}
+                            {%if not current_user.isadmin%}
+                                    <td><button class="btn btn-success" onclick="buy_item(event)">Buy</button></td>
+                            {%endif%}
+                        {%else%}
+                            <td><button class="btn btn-success" onclick="buy_item(event)">Buy</button></td>
+                        {%endif%}
+                    </tr>
+                {%endfor%}
+            </table>
+        </div>
+    </div>
+</div>
+------>
+
+<div class="container" id="outeritemdiv">
+        {%for p in products%}
+            <div class="col-md-2 text-center" id="itemdivs">
+                <p class="hidden">{{p.id}}</p>
+                <h4 class="text-center">{{p.name}}</h4>
+                <p>&#8377;{{p.price}}</p>
+                <p class="hidden">{{p.description}}</p>
+                <button class="btn btn-primary" onclick="alert_info(event)">Details</button><span>&nbsp;</span>
+                {%if current_user.is_authenticated%}
+                    {%if not current_user.isadmin%}
+                        <button class="btn btn-success" onclick="buy_item(event)" >Buy</button>
+                    {%endif%}
+                {%else%}
+                    <button class="btn btn-success" onclick="buy_item(event)" >Buy</button>
+                {%endif%}
+            </div>
+        {%endfor%}
+</div>
+
+<br><br><br><br><br><br>
+
+<form action="http://localhost:3000/userpage" method="post" class="hidden" id="buy_item">
+    <input type="number" value="" name="id">
+    <input type="text" value="" name="pname">
+    <input type="number" value="" name="price">
+    <input type="submit" value="buy_item" name="submit">
+</form>
+
+
+<script>
+
+    function alert_info(event){
+        parent=event.target.parentElement
+        document.getElementById("alerting_modl").innerHTML="Name: "+parent.children[1].innerHTML+"<br>Price: "+parent.children[2].innerHTML;
+        document.getElementById("alerting_info").innerHTML=parent.children[3].innerHTML;
+        document.getElementById("modl_button").click();
+    }
+
+    function buy_item(event){
+        let parent=event.target.parentElement;
+        let id=parent.children[0].innerHTML;
+        let name=parent.children[1].innerHTML;
+        let price=parseInt(parent.children[2].innerHTML.slice(1));
+        let buyform=document.getElementById("buy_item");
+        buyform.children[0].value=id;
+        buyform.children[1].value=name;
+        buyform.children[2].value=price;
+        buyform.children[3].click();
+    }
+
+</script>
+
+{% endblock %}

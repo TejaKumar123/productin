@@ -1,0 +1,464 @@
+{%extends "temp.html"%}
+{%block title%}
+adminpage
+{%endblock%}
+
+{%block content%}
+<style>
+    body::-webkit-scrollbar{width:0px;}
+    ::-webkit-scrollbar{
+        width:10px;
+        cursor:default;
+    }
+    ::-webkit-scrollbar-thumb{
+        background-color:#3bb4d3;
+        border-radius:10px;
+    }
+    ::-webkit-scrollbar-track{
+        background:transparent;
+    }
+
+    #dashheader{position:sticky;top:50px;z-index:1;background-color:rgba(255,255,255,0.1);padding:5px;backdrop-filter:blur(10px) brightness(130%);border-radius:7px;box-shadow:0px 0px 6px black;}
+    #div1,#div2,#div3{border:none;padding:8px 0px 5px 0px;margin-left:5px;cursor:pointer;border-bottom:3px solid #337ab7;background-color:#337ab7;color:white;transition:0.25s;backdrop-filter:;font-weight:700;border-radius:7px;}
+    #div1{margin-left:20px;}
+    #product,#accounts,#bookings{display:none;border:;}
+    #user_data input{border:1px solid black;}
+    #item_data input{border:1px solid black;color:black;}
+    #item_data textarea{border:1px solid black;color:black;}
+    table{background-color:rgba(34,34,34,0.4);backdrop-filter:blur(8px);color:white;font-size:110%;}
+    table tr:hover{background-color:rgba(34,34,34,0.6);}
+    #tablerow1 td{background-color:black;color:white;padding:11px 0px 11px 0px;font-size:110%;}
+    #tablerow1:hover{background-color:black;}
+    #edit_inputs input{border:1px solid black;color:black;outline:none;}
+    #edit_inputs textarea{resize:vertical;border:1px solid black;max-height:200px;min-height:100px;color:black;}
+</style>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            {%with m=get_flashed_messages(with_categories=true)%}
+                {%if m%}
+                    {%for category,mesg in m%}
+                        <div class="alert alert-{{category}} alert-dismissable">
+                            <span class="close" data-dismiss="alert">&times;</span>
+                            <b>{{mesg}}</b>
+                        </div>
+                    {%endfor%}
+                {%endif%}
+            {%endwith%}
+        </div>
+    </div>
+</div>
+
+<button class="btn hidden" data-toggle="modal" data-target="#mymodal" id="modal_button"></button>
+<div class="modal fade" id="mymodal">
+    <div class="modal-dialog">
+        <div style="padding:10px 10px 10px 10px;background-color:#ff0000;border:1px solid black;border-radius:7px;">
+                <span class="close" data-dismiss="modal" >&times;</span>
+                <b><li style="list-style-type:none;color:white;font-size:120%;" id="alerting_modal" ></li></b>
+        </div>
+    </div>
+</div>
+
+<button class="btn hidden" data-toggle="modal" data-target="#mymodl" id="modl_button"></button>
+<div class="modal fade" id="mymodl">
+    <div class="modal-dialog" style="border:2px solid #337ab7;border-radius:10px;overflow:hidden;">
+        <div class="modal-header bg-primary" style="padding:10px 10px 10px 10px;border-bottom:1px solid black;">
+                <span class="close" data-dismiss="modal" style="font-size:190%;" >&times;</span>
+                <b><li style="list-style-type:none;color:white;font-size:110%;" id="alerting_modl" ></li></b>
+        </div>
+        <div class="modal-body" style="padding:10px 10px 1px 10px;background-color:white;font-size:110%;color:black;">
+            <p id="alerting_info"></p>
+        </div>
+    </div>
+</div>
+
+<button class="btn hidden" data-toggle="modal" data-target="#mymod" id="mod_button"></button>
+<div class="modal fade" id="mymod">
+    <div class="modal-dialog" style="border:2px solid #337ab7;border-radius:10px;overflow:hidden;">
+        <div class="modal-header bg-primary" style="padding:10px 10px 10px 10px;border-bottom:1px solid black;">
+                <span class="close" data-dismiss="modal" style="font-size:190%;" >&times;</span>
+                <b><li style="list-style-type:none;color:white;font-size:110%;" id="alerting_mod" ></li></b>
+        </div>
+        <div class="modal-body" style="padding:10px 10px 1px 10px;background-color:white;font-size:110%;color:black;">
+            <p id="alerting_pinfo"></p>
+        </div>
+    </div>
+</div>
+
+<h1 class="text-center" style="color:black;">Dashboard</h1>
+<div class="container" id="dashheader">
+    <div class="row text-center">
+        <div class="col-md-1" id="div1" onclick="dashboard('div1','product')">
+            <big>Products</big>
+        </div>
+
+        <div class="col-md-1" id="div2" onclick="dashboard('div2','accounts')">
+            <big>Accounts</big>
+        </div>
+
+        <div class="col-md-1" id="div3" onclick="dashboard('div3','bookings')">
+            <big>Bookings</big>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="product">
+    <h1 style="color:black;">Products</h1>
+    <table class="table table-responsive">
+        <tr>
+            <tr class="text-center text-primary" id="tablerow1">
+                <td><b>Id</b></td>
+                <td><b>Name</b></td>
+                <td><b>Price</b></td>
+                <td><b>Description</b></td>
+                <td colspan="3"><b>Product operations</b></td>
+            </tr>
+            {%for p in products%}
+                <tr  class="text-center" id="edit_inputs">
+                    <td>{{p.id}}</td>
+                    <td>{{p.name}}</td>
+                    <td>{{p.price}}</td>
+                    <td class="hidden">{{p.description}}</td>
+                    <td><button class="btn btn-primary" onclick="alert_info(event)">Details</button></td>
+                    <td><button class="btn btn-danger" onclick="remove_item(event)">Remove</button></td>
+                    <td><button class="btn btn-info" onclick="edit_item(event)" style="color:black;background-color:orange;border:none;outline:none;">Edit</button></td>
+                    <td></td>
+                </tr>
+            {%endfor%}
+            <tr class="text-center" id="item_data">
+                <td></td>
+                <td><input type="text" placeholder="Name" value="" class="form-control" maxlength="30"></td>
+                <td><input type="number" placeholder="Price" value="" class="form-control"></td>
+                <td><textarea placeholder="description..." class="form-control" style="resize:vertical;min-height:100px;max-height:200px;" maxlength="200"></textarea></td>
+                <td><button class="btn btn-success" onclick="add_item(event)">Add&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-log-in" style="pointer-events:none;"></span></button></td>
+                <td></td>
+                <td></td>
+            </tr>
+    </table>
+    <br></br>
+    <br></br>
+    <br></br>
+
+</div>
+
+<div class="container" id="accounts">
+    <h1 style="color:black;">Accounts</h1>
+    <table class="table table-responsive">
+        <tr class="text-center text-primary" id="tablerow1">
+            <td><b>Id</b></td>
+            <td><b>Username</b></td>
+            <td><b>Email</b></td>
+            <td><b>Password</b></td>
+            <td><b>IsAdmin</b></td>
+            <td></td>
+        </tr>
+        {%for i in users%}
+            {%if i.isadmin and current_user.id==i.id %}
+            <tr class="text-center" style="background-color:green;color:white;">
+            {%elif i.isadmin and current_user.id!=i.id %}
+            <tr class="text-center" style="background-color:#337ab7;color:white;">
+            {%else%}
+            <tr class="text-center">
+            {%endif%}
+                <td>{{i.id}}</td>
+                <td>{{i.username}}</td>
+                <td>{{i.email}}</td>
+                <td>{{i.password}}</td>
+                <td>{{i.isadmin}}</td>
+                {%if not i.isadmin%}
+                <td><button class="btn btn-danger" onclick="remove_account(event)">Remove</button></td>
+                {%else%}
+                <td></td>
+                {%endif%}
+            </tr>
+        {%endfor%}
+        <tr class="text-center" id="user_data">
+            <td></td>
+            <td><input type="text" placeholder="username" class="form-control" value=""></td>
+            <td><input type="text" placeholder="eg:productin@gmail.com" class="form-control" value="" ></td>
+            <td><input type="text" placeholder="password" class="form-control" value=""></td>
+            <td><input type="number" placeholder="0 or 1" class="form-control" value="" ></td>
+            <td style="color:black;font-size:120%;cursor:pointer;"><button class="btn btn-success" onclick="add_account(event)" >Add&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-log-in" style="pointer-events:none;"></span></button></td>
+        </tr>
+    </table>
+</div>
+
+<div class="container" id="bookings">
+    <h1 style="color:black;">Bookings</h1>
+    <table class="table table-responsive">
+        <tr>
+            <tr class="text-center text-primary" id="tablerow1">
+                <td><b>Customer Id</b></td>
+                <td><b>Customer Name</b></td>
+                <td><b>Product Id</b></td>
+                <td><b>Product Name</b></td>
+                <td><b>Description</b></td>
+                <td></td>
+            </tr>
+
+            {%for b in bookings%}
+                <tr  class="text-center">
+                    <td>{{b.cid}}</td>
+
+                    {%for u in users%}
+                        {%if u.id==b.cid%}
+                            <td>{{u.username}}</td>
+                        {%endif%}
+                    {%endfor%}
+
+                    <td>{{b.pid}}</td>
+
+                    {%for p in products%}
+                        {%if p.id==b.pid%}
+                            <td>{{p.name}}</td>
+                            <td class="hidden">{{p.price}}</td>
+                            <td class="hidden">{{p.description}}</td>
+                        {%endif%}
+                    {%endfor%}
+
+                    <td><button class="btn btn-primary" onclick="alert_productinfo(event)">Details</button></td>
+                    <td><button class="btn btn-danger" onclick="remove_booking(event)">Remove</button></td>
+                </tr>
+            {%endfor%}
+    </table>
+    <br></br>
+    <br></br>
+    <br></br>
+</div>
+
+
+<!-----form for sending data for adding and deleting---------->
+<form action="{{request.path}}" method="post" id="remove_account" style="display:none;">
+    <input type="number" value="" name="userid">
+    <input type="text" value="" name="username">
+    <input type="text" value="" name="email">
+    <input type="text" value="" name="password">
+    <input type="text" value="" name="admin">
+    <input type="submit" name="submit" value="remove">
+</form>
+
+<form action="{{request.path}}" method="post" id="add_account" style="display:none;">
+    <input type="text" value="" name="username" >
+    <input type="email" value="" name="email">
+    <input type="password" value="" name="password">
+    <input type="number" value="" name="admin">
+    <input type="submit" name="submit" value="add">
+</form>
+
+<form action="{{request.path}}" method="post" id="add_item" class="hidden">
+    <input type="text" value="" name="item_name">
+    <input type="number" value="" name="price">
+    <input type="text" value="" name="desc">
+    <input type="submit" value="add_item" name="submit">
+</form>
+
+<form action="{{request.path}}" method="post" id="remove_item" class="hidden">
+    <input type="number" value="" name="id">
+    <input type="text" value="" name="item_name">
+    <input type="number" value="" name="price">
+    <input type="text" value="" name="desc">
+    <input type="submit" value="remove_item" name="submit">
+</form>
+
+<form action="{{request.path}}" method="post" class="hidden" id="remove_booking">
+    <input type="number" value="" name="cid">
+    <input type="number" value="" name="pid">
+    <input type="submit" value="remove_booking" name="submit">
+</form>
+
+<form action="{{request.path}}" method="post" class="hidden" id="update_item">
+    <input type="number" value="" name="pid">
+    <input type="text" value="" name="pname">
+    <input type="number" value="" name="price">
+    <input type="text" value="" name="desc">
+    <input type="submit" value="update_item" name="submit">
+</form>
+
+<div style="display:none;" id="dashinfo">
+<p>{{dash[0]}}</p>
+<p>{{dash[1]}}</p>
+</div>
+
+
+<script>
+
+var navlink1="",navlink2="";
+function dashboard(a,a1){
+    document.getElementById(a).style.backgroundColor="rgba(255,255,255,0.1)";
+    document.getElementById(a).style.color="black";
+    document.getElementById(a).style.backdropFilter="brightness(190%)";
+    document.getElementById(a1).style.display="block";
+
+    if(navlink1=="" && navlink2=="" ){
+        navlink1=a
+        navlink2=a1
+    }
+    else if(a!=navlink1 && a1!=navlink2){
+        document.getElementById(navlink1).style.backgroundColor="#337ab7";
+        document.getElementById(navlink1).style.color="white";
+        document.getElementById(navlink1).style.backdropFilter="";
+        document.getElementById(navlink2).style.display="none";
+        navlink1=a;
+        navlink2=a1;
+    }
+
+}
+//these info's are for storing the information send by "dash" variable in rendering
+info1=document.getElementById("dashinfo").children[0].innerHTML
+info2=document.getElementById("dashinfo").children[1].innerHTML
+dashboard(info1,info2);
+
+function remove_account(event){
+    //alert(event.target.parentElement.parentElement.children[2].innerHTML)
+    let parent=event.target.parentElement.parentElement;
+    userid=parent.children[0].innerHTML
+    username=parent.children[1].innerHTML
+    email=parent.children[2].innerHTML
+    password=parent.children[3].innerHTML
+    admin=parent.children[4].innerHTML
+    removeform=document.getElementById("remove_account")
+    removeform.children[0].value=userid;
+    removeform.children[1].value=username;
+    removeform.children[2].value=email;
+    removeform.children[3].value=password;
+    removeform.children[4].value=admin;
+    removeform.children[5].click();
+}
+
+function add_account(event){
+    let parent=event.target.parentElement.parentElement;
+    let username=parent.children[1].children[0].value;
+    let email=parent.children[2].children[0].value;
+    let password=parent.children[3].children[0].value;
+    let admin=parent.children[4].children[0].value;
+    if(username=="" || email=="" || password=="" || admin==""){
+        document.getElementById("alerting_modal").innerHTML="All fields should be filled";
+        document.getElementById("modal_button").click()
+        return;
+    }
+    let addform=document.getElementById("add_account");
+    addform.children[0].value=username;
+    addform.children[1].value=email;
+    addform.children[2].value=password;
+    addform.children[3].value=admin;
+    addform.children[4].click();
+}
+
+function add_item(event){
+    let parent=event.target.parentElement.parentElement;
+    let item_name=parent.children[1].children[0].value;
+    let price=parseInt(parent.children[2].children[0].value);
+    let desc=parent.children[3].children[0].value;
+    if(item_name=="" || price=="" || desc==""){
+        document.getElementById("alerting_modal").innerHTML="All fields should be filled";
+        document.getElementById("modal_button").click();
+        return;
+    }
+    let itemform=document.getElementById("add_item")
+    itemform.children[0].value=item_name;
+    itemform.children[1].value=price;
+    itemform.children[2].value=desc;
+    itemform.children[3].click();
+}
+
+function remove_item(event){
+    let parent=event.target.parentElement.parentElement;
+    let id=parseInt(parent.children[0].innerHTML);
+    let name=parent.children[1].innerHTML
+    let price=parseInt(parent.children[2].innerHTML);
+    let desc=parent.children[3].innerHTML
+    let itemremove=document.getElementById("remove_item");
+    itemremove.children[0].value=id;
+    itemremove.children[1].value=name;
+    itemremove.children[2].value=price;
+    itemremove.children[3].value=desc;
+    itemremove.children[4].click();
+}
+
+function remove_booking(event){
+    let parent=event.target.parentElement.parentElement;
+    let cid=parent.children[0].innerHTML
+    let pid=parent.children[2].innerHTML
+    let removebook=document.getElementById("remove_booking");
+    removebook.children[0].value=cid;
+    removebook.children[1].value=pid;
+    removebook.children[2].click();
+}
+
+var eparent="",epid,epname,eprice,edesc;
+function edit_item(event){
+    if(eparent==""){
+        eparent=event.target.parentElement.parentElement;
+    }
+    else if(eparent!=event.target.parentElement.parentElement){
+        eparent.children[6].children[0].click()
+        eparent=event.target.parentElement.parentElement;
+    }
+    epid=eparent.children[0].innerHTML;
+    epname=eparent.children[1].innerHTML;
+    eprice=eparent.children[2].innerHTML;
+    edesc=eparent.children[3].innerHTML;
+    eparent.children[1].innerHTML='<input type="text" placeholder="Name" value="'+epname+'" class="form-control" maxlength="30">';
+    eparent.children[2].innerHTML='<input type="number" placeholder="Price" value='+eprice+' class="form-control">';
+    eparent.children[4].innerHTML='<textarea placeholder="Description..." class="form-control" max-length="200">'+edesc+'</textarea>';
+    eparent.children[7].innerHTML='<button class="btn btn-success" onclick="update_item(event)">update</button>';
+    event.target.innerHTML="cancel";
+    event.target.removeAttribute("onclick");
+    event.target.setAttribute("onclick","cancel_edit_item(event)");
+
+}
+
+function cancel_edit_item(event){
+    eparent.children[1].innerHTML=epname;
+    eparent.children[2].innerHTML=eprice;
+    eparent.children[4].innerHTML='<button class="btn btn-primary" onclick="alert_info(event)">Details</button>';
+    eparent.children[7].innerHTML="";
+    event.target.innerHTML="Edit";
+    event.target.removeAttribute("onclick");
+    event.target.setAttribute("onclick","edit_item(event)");
+    eparent=""
+    //we need to make eparent to be empty because if it is not empty it means that cancel button is still enabled. so, if we click another edit button it assumes that one cancel button is still enabled .so, it tries to click it but there is edit button because cancel button is already clicked so, it will click edit button instead of cancel button.
+}
+
+function update_item(event){
+    let parent=event.target.parentElement.parentElement
+    let item_id=parent.children[0].innerHTML;
+    let item_name=parent.children[1].children[0].value;
+    let item_price=parent.children[2].children[0].value;
+    let item_desc=parent.children[4].children[0].value;
+    if(item_id=="" || item_name=="" || item_price=="" || item_desc==""){
+        document.getElementById("alerting_modal").innerHTML="All fields should be filled"
+        document.getElementById("modal_button").click();
+        return;
+    }
+    if(item_id==epid && item_name==epname && item_price==eprice && item_desc==edesc){
+        eparent.children[6].children[0].click()
+        return;
+    }
+    let updateform=document.getElementById("update_item")
+    updateform.children[0].value=item_id
+    updateform.children[1].value=item_name
+    updateform.children[2].value=parseInt(item_price);
+    updateform.children[3].value=item_desc
+    //alert(updateform.children[3].value);
+    updateform.children[4].click();
+}
+
+function alert_info(event){
+    let parent=event.target.parentElement.parentElement
+    document.getElementById("alerting_modl").innerHTML="Name: "+parent.children[1].innerHTML+"<br>Price: "+parent.children[2].innerHTML;
+    document.getElementById("alerting_info").innerHTML=parent.children[3].innerHTML;
+    document.getElementById("modl_button").click();
+}
+
+function alert_productinfo(event){
+    let parent=event.target.parentElement.parentElement;
+    document.getElementById("alerting_mod").innerHTML="Name: "+parent.children[3].innerHTML+"<br>Price: "+parent.children[4].innerHTML;
+    document.getElementById("alerting_pinfo").innerHTML=parent.children[5].innerHTML;
+    document.getElementById("mod_button").click();
+}
+
+</script>
+
+{%endblock%}

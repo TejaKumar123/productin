@@ -1,0 +1,50 @@
+{%extends "temp.html"%}
+{%block title%}
+Email Verification
+{%endblock%}
+{%block content%}
+
+<style>
+    #verificationpage{background-color:rgba(255,255,255,0.1);padding:15px;backdrop-filter:blur(10px) brightness(120%);border-radius:10px;box-shadow:0px 0px 6px black;}
+    #otp{background:transparent;box-shadow:none;border:none;border-bottom:2px solid black;outline:none;border-radius:0px;color:black;font-weight:700;}
+</style>
+
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            {%with m=get_flashed_messages(with_categories=true)%}
+                {%if m%}
+                    {%for color,message in m%}
+                        <div class="alert alert-{{color}} alert-dismissable">
+                            <span class="close" data-dismiss="alert">&times;</span>
+                            {{message}}
+                        </div>
+                    {%endfor%}
+                {%endif%}
+            {%endwith%}
+        </div>
+    </div>
+</div>
+<h1 class="text-center" style="color:black;">Email Verification</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4" id="verificationpage">
+            <form action="{{request.path}}" method="post" class="text-center">
+                <div class="form-group">
+                    <label for="otp" class="form-label" style="color:black;">Enter the OTP send to<br><span style="color:blue;">{{email}}</span></label><br>
+                    <input type="number" name="otp" id="otp" class="form-control" placeholder="012345" style="width:150px;letter-spacing:6px;font-size:120%;margin:auto;" required autofocus>
+                </div>
+                <div class="form-group">
+                    <input type="submit" name="submit" class="form-control" value="verify" style="width:150px;background-color:green;color:white;margin:auto;" required>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+
+
+
+{%endblock%}
