@@ -25,6 +25,7 @@
 <h2>Sent mail UI:</h2>
 <img src="readme/d.png" >
 <h2>Email verification page:</h2>
+<p>User have 5 attempts to enter the corrrect otp.</p>
 <img src="readme/e.png" >
 <h2>SignIn page:</h2>
 <p>After user login if he is admin, admin page will be displayed, otherwise userpage will be displayed.</p>
