@@ -18,3 +18,27 @@
 <p>It is a product booking website where user can book products. It has signin and signup functionality using flask-login. Email verification is done using flask-mail while creating an account. </p>
 <h2>Home page:</h2>
 <img src="readme/a.png" >
+<h2>Home page:</h2>
+<img src="readme/b.png" >
+<h2>Home page:</h2>
+<img src="readme/c.png" >
+<h2>Home page:</h2>
+<img src="readme/d.png" >
+<h2>Home page:</h2>
+<img src="readme/e.png" >
+<h2>Home page:</h2>
+<img src="readme/f.png" >
+<h2>Home page:</h2>
+<img src="readme/g.png" >
+<h2>Home page:</h2>
+<img src="readme/h.png" >
+<h2>Home page:</h2>
+<img src="readme/i.png" >
+<h2>Home page:</h2>
+<img src="readme/j.png" >
+<h2>Home page:</h2>
+<img src="readme/k.png" >
+<h2>Home page:</h2>
+<img src="readme/l.png" >
+<h2>Home page:</h2>
+<img src="readme/m.png" >
